@@ -14,7 +14,7 @@ The image below shows one scenario where this tool might be useful.
 2. Put the sciprt, wav file and text grid file in the same folder.
 3. Open the script in Praat by Open-->Read from file, then run the sciprt.
 4. Fill in the form accordingly. Note that file extensions do not need to be included. If there are voiceless intervals, specify the label used for non-voiced portions in the interval tier. If there are *no* voiceless intervals, leave the field blank.
-5. The resultant data will consist of 11 columns (file named )
+5. The resultant data will consist of 11 columns
 
 - WordRep: the label used in the first labelling tier.
 - Word: the corresponding word without repetition number.
