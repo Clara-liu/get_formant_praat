@@ -9,7 +9,7 @@ The image below shows one scenario where this tool might be useful.
 
 ![Praat UI example](examples/example.png)
 
-##Instructions:
+## Instructions:
 1. Label your wav file with a corresponding text grid file in the format shown above.
 2. Put the sciprt, wav file and text grid file in the same folder.
 3. Open the script in Praat by Open-->Read from file, then run the sciprt.
