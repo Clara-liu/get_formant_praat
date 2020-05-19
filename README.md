@@ -1,4 +1,4 @@
-##A tool for formant extraction with word, repetition  and interval labelling. Non voiced intervals can be specified.
+## A tool for formant extraction with word, repetition  and interval labelling. Non voiced intervals can be specified.
 This is a tool for Praat users to extract *smoothed* formant data from a wav and corresponding text grid file. The resultant time series dataframe will in the long format.  
 
 It is especially useful when your intervals of interest contain sub-intervals of interest, as well as when there are non-voiced portions that need to be retained in the final data. The labelled voiceless portions will have blank formant values and will show up as NaN in pandas and NA in R. 
