@@ -147,7 +147,7 @@ for r from 1 to total_rows
 endfor
 
 if number_of_smooths > 1
-for smooth from 1 to (number_of_smooths-1)
+	for smooth from 1 to (number_of_smooths-1)
         resmoothed_row = 1
         for int from 1 to intNum
             select TextGrid 'labelFile$'
