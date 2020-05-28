@@ -3,6 +3,7 @@ form Start
 	word Audio_file_name name
 	word Label_file_name name
 	integer Sampling_rate 160
+	integer Number_of_smooths 2
 	word Nonvoiced_interval_label voiceless
 	word Data_file_name result
 endform
@@ -40,7 +41,6 @@ for int from 1 to intNum
 select TextGrid 'labelFile$'
 
 label$ = Get label of interval... 1 int
-
 	if length(label$)
 		word$ = replace_regex$(label$, "\d", "", 0)
 
@@ -88,28 +88,28 @@ label$ = Get label of interval... 1 int
         
         for r from 1 to rows
             if r == 1 or r == rows
-                f1_smoothed[smoothed_row] = Get value... r F1
-                f2_smoothed[smoothed_row] = Get value... r F2
-                f3_smoothed[smoothed_row] = Get value... r F3
+				f1_smoothed[smoothed_row] = Get value... r F1
+				f2_smoothed[smoothed_row] = Get value... r F2
+				f3_smoothed[smoothed_row] = Get value... r F3
                 smoothed_row += 1
             else
-                f1_left = Get value... (r-1) F1
-                f1_mid = Get value... r F1
-                f1_right = Get value... (r+1) F1
+				f1_left = Get value... (r-1) F1
+				f1_mid = Get value... r F1
+				f1_right = Get value... (r+1) F1
             
-                f2_left = Get value... (r-1) F2
-                f2_mid = Get value... r F2
-                f2_right = Get value... (r+1) F2
+				f2_left = Get value... (r-1) F2
+				f2_mid = Get value... r F2
+				f2_right = Get value... (r+1) F2
             
-                f3_left = Get value... (r-1) F3
-                f3_mid = Get value... r F3
-                f3_right = Get value... (r+1) F3
+				f3_left = Get value... (r-1) F3
+				f3_mid = Get value... r F3
+				f3_right = Get value... (r+1) F3
                 
 				if f1_left <> undefined and f1_right <> undefined
-                    f1_smoothed[smoothed_row] = (f1_left + f1_mid + f1_right)/3
-                    f2_smoothed[smoothed_row] = (f2_left + f2_mid + f2_right)/3
-                    f3_smoothed[smoothed_row] = (f3_left + f3_mid + f3_right)/3
-                    smoothed_row += 1
+					f1_smoothed[smoothed_row] = (f1_left + f1_mid + f1_right)/3
+					f2_smoothed[smoothed_row] = (f2_left + f2_mid + f2_right)/3
+					f3_smoothed[smoothed_row] = (f3_left + f3_mid + f3_right)/3
+					smoothed_row += 1
 				elsif f1_right == undefined or f1_left == undefined
 					f1_smoothed[smoothed_row] = Get value... r F1
 					f2_smoothed[smoothed_row] = Get value... r F2
@@ -132,8 +132,6 @@ label$ = Get label of interval... 1 int
 endfor
 
 select Formant 'audioFile$'
-plus Sound 'audioFile$'
-plus TextGrid 'labelFile$'
 Remove
 
 select Table Data
@@ -148,5 +146,78 @@ for r from 1 to total_rows
 	endif
 endfor
 
+if number_of_smooths > 1
+for smooth from 1 to (number_of_smooths-1)
+        resmoothed_row = 1
+        for int from 1 to intNum
+            select TextGrid 'labelFile$'
+            label$ = Get label of interval... 1 int
+            if length(label$)
+                select Table Data
+                Extract rows where column (text)... WordRep "is equal to" 'label$'
+                
+                select Table Data_'label$'
+                rows = Get number of rows
+                for r from 1 to rows
+                    if r == 1 or r == rows
+                        f1_smoothed[resmoothed_row] = Get value... r F1
+                        f2_smoothed[resmoothed_row] = Get value... r F2
+                        f3_smoothed[resmoothed_row] = Get value... r F3
+                        resmoothed_row += 1
+                    else
+                        f1_s_left = Get value... (r-1) F1_s
+                        f1_s_mid = Get value... r F1_s
+                        f1_s_right = Get value... (r+1) F1_s
+                    
+                        f2_s_left = Get value... (r-1) F2_s
+                        f2_s_mid = Get value... r F2_s
+                        f2_s_right = Get value... (r+1) F2_s
+                    
+                        f3_s_left = Get value... (r-1) F3_s
+                        f3_s_mid = Get value... r F3_s
+                        f3_s_right = Get value... (r+1) F3_s
+                        
+                        if f1_s_left <> undefined and f1_s_right <> undefined
+                            f1_smoothed[resmoothed_row] = (f1_s_left + f1_s_mid + f1_s_right)/3
+                            f2_smoothed[resmoothed_row] = (f2_s_left + f2_s_mid + f2_s_right)/3
+                            f3_smoothed[resmoothed_row] = (f3_s_left + f3_s_mid + f3_s_right)/3
+                            resmoothed_row += 1
+                        elsif f1_s_right == undefined or f1_s_left == undefined
+                            f1_smoothed[resmoothed_row] = Get value... r F1_s
+                            f2_smoothed[resmoothed_row] = Get value... r F2_s
+                            f3_smoothed[resmoothed_row] = Get value... r F3_s
+                            resmoothed_row += 1
+                        else
+                            f1_smoothed[resmoothed_row] =
+                            f2_smoothed[resmoothed_row] =
+                            f3_smoothed[resmoothed_row] =
+                            resmoothed_row += 1
+                        endif
+                    endif
+                
+                endfor
+                select Table Data_'label$'
+                Remove
+                
+            endif
+        endfor
+    endfor
+endif
+
+select Table Data
+
+for r from 1 to total_rows
+    interval$ = Get value... r Interval
+    if interval$ <> non_voiced$
+        Set numeric value... r F1_s f1_smoothed[r]
+        Set numeric value... r F2_s f2_smoothed[r]
+        Set numeric value... r F3_s f3_smoothed[r]
+    endif
+endfor
+
 Save as comma-separated file... 'data_file_name$'.csv
+Remove
+
+select Sound 'audioFile$'
+plus TextGrid 'labelFile$'
 Remove
