@@ -15,6 +15,11 @@ audioFile$ = audio_file_name$
 time_step = 1/sr
 non_voiced$ = nonvoiced_interval_label$
 
+# for trimming formants
+max_bump = 0.1
+max_edge = 0.0
+
+
 Read from file... 'labelFile$'.TextGrid
 Read from file... 'audioFile$'.wav
 
@@ -79,7 +84,7 @@ label$ = Get label of interval... 1 int
 			rowNum += 1
 		endfor
         
-        ## calculate smoothed formant arrays
+        # trim formants
         select Table Data
         Extract rows where column (text)... WordRep "is equal to" 'label$'
         
@@ -106,9 +111,42 @@ label$ = Get label of interval... 1 int
 				f3_right = Get value... (r+1) F3
                 
 				if f1_left <> undefined and f1_right <> undefined
-					f1_smoothed[smoothed_row] = (f1_left + f1_mid + f1_right)/3
-					f2_smoothed[smoothed_row] = (f2_left + f2_mid + f2_right)/3
-					f3_smoothed[smoothed_row] = (f3_left + f3_mid + f3_right)/3
+					f1_diff1_hump = f1_mid - f1_left
+					f1_diff2_hump = f1_mid - f1_left
+					f1_diff1_dip = f1_left - f1_mid
+					f1_diff2_dip = f1_right - f1_mid
+
+					f2_diff1_hump = f2_mid - f2_left
+					f2_diff2_hump = f2_mid - f2_left
+					f2_diff1_dip = f2_left - f2_mid
+					f2_diff2_dip = f2_right - f2_mid
+
+					f3_diff1_hump = f3_mid - f3_left
+					f3_diff2_hump = f3_mid - f3_left
+					f3_diff1_dip = f3_left - f3_mid
+					f3_diff2_dip = f3_right - f3_mid
+					
+					if (f1_diff1_hump > max_bump and f1_diff2_hump > max_edge) or (f1_diff1_dip > max_bump and f1_diff2_dip > max_edge)
+						f1_trimmed = f1_left + time_step/(time_step*2)*(f1_right-f1_left)
+						f1_smoothed[smoothed_row] = f1_trimmed
+					else
+						f1_smoothed[smoothed_row] = f1_mid
+					endif
+
+					if (f2_diff1_hump > max_bump and f2_diff2_hump > max_edge) or (f2_diff1_dip > max_bump and f2_diff2_dip > max_edge)
+						f2_trimmed = f2_left + time_step/(time_step*2)*(f2_right-f2_left)
+						f2_smoothed[smoothed_row] = f2_trimmed
+					else
+						f2_smoothed[smoothed_row] = f2_mid
+					endif
+
+					if (f3_diff1_hump > max_bump and f3_diff2_hump > max_edge) or (f3_diff1_dip > max_bump and f3_diff2_dip > max_edge)
+						f3_trimmed = f3_left + time_step/(time_step*2)*(f3_right-f3_left)
+						f3_smoothed[smoothed_row] = f3_trimmed
+					else
+						f3_smoothed[smoothed_row] = f3_mid
+					endif
+
 					smoothed_row += 1
 				elsif f1_right == undefined or f1_left == undefined
 					f1_smoothed[smoothed_row] = Get value... r F1
@@ -146,8 +184,9 @@ for r from 1 to total_rows
 	endif
 endfor
 
-if number_of_smooths > 1
-	for smooth from 1 to (number_of_smooths-1)
+# calculate smoothed formant arrays
+if number_of_smooths > 0
+	for smooth from 1 to number_of_smooths
         resmoothed_row = 1
         for int from 1 to intNum
             select TextGrid 'labelFile$'
