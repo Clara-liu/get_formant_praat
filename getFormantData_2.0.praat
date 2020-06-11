@@ -127,21 +127,21 @@ label$ = Get label of interval... 1 int
 					f3_diff2_dip = f3_right - f3_mid
 					
 					if (f1_diff1_hump > max_bump and f1_diff2_hump > max_edge) or (f1_diff1_dip > max_bump and f1_diff2_dip > max_edge)
-						f1_trimmed = f1_left + time_step/(time_step*2)*(f1_right-f1_left)
+						f1_trimmed = f1_left + (time_step*(f1_right-f1_left))/(time_step*2)
 						f1_smoothed[smoothed_row] = f1_trimmed
 					else
 						f1_smoothed[smoothed_row] = f1_mid
 					endif
 
 					if (f2_diff1_hump > max_bump and f2_diff2_hump > max_edge) or (f2_diff1_dip > max_bump and f2_diff2_dip > max_edge)
-						f2_trimmed = f2_left + time_step/(time_step*2)*(f2_right-f2_left)
+						f2_trimmed = f2_left + (time_step*(f2_right-f2_left))/(time_step*2)
 						f2_smoothed[smoothed_row] = f2_trimmed
 					else
 						f2_smoothed[smoothed_row] = f2_mid
 					endif
 
 					if (f3_diff1_hump > max_bump and f3_diff2_hump > max_edge) or (f3_diff1_dip > max_bump and f3_diff2_dip > max_edge)
-						f3_trimmed = f3_left + time_step/(time_step*2)*(f3_right-f3_left)
+						f3_trimmed = f3_left + (time_step*(f3_right-f3_left))/(time_step*2)
 						f3_smoothed[smoothed_row] = f3_trimmed
 					else
 						f3_smoothed[smoothed_row] = f3_mid
