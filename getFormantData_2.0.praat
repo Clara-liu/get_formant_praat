@@ -8,7 +8,6 @@ form Start
 	word Data_file_name result
 endform
 
-gender$ = speaker_gender$
 sr = sampling_rate
 labelFile$ = label_file_name$
 audioFile$ = audio_file_name$
