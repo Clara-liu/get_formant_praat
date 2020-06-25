@@ -1,5 +1,5 @@
 form Start
-	word Speaker_gender female
+	integer Max_formant 5500
 	word Audio_file_name name
 	word Label_file_name name
 	integer Sampling_rate 160
@@ -23,16 +23,10 @@ max_edge = 0.0
 Read from file... 'labelFile$'.TextGrid
 Read from file... 'audioFile$'.wav
 
-if gender$ == "male"
-	maxFormant = 5000
-else
-	maxFormant = 5500
-endif
-
 Create Table with column names... Data 0 WordRep Word Interval RealTime Time F1 F2 F3 F1_s F2_s F3_s
 
 select Sound 'audioFile$'
-To Formant (burg)... 0 5 maxFormant 0.025 50
+To Formant (burg)... 0 5 max_formant 0.025 50
 
 select TextGrid 'labelFile$'
 intNum = Get number of intervals... 1
