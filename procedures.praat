@@ -26,7 +26,7 @@ procedure getShortest
         	tempDf$ = tempDf$ + "_" + align_at_the_end_of_boundary_labelled$
         	select Table 'tempDf$'
         	length = Get number of rows
-			if length > 0
+			if length
         		duration = Get value... length Time
 
 				# get the last time point of the alignment boundary

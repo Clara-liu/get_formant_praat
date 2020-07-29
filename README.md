@@ -17,9 +17,12 @@ Figure 2 shows both smoothed and unsmoothed formant trajectories of the first in
 (Figure2)
 
 ### Feature highlights:
-- A trimming algorithm adapted from [FormantPro](http://www.homepages.ucl.ac.uk/~uclyyix/FormantPro/) is used to smooth out irregular spikes or dips in the signal.  
+- A trimming algorithm adapted from [FormantPro](http://www.homepages.ucl.ac.uk/~uclyyix/FormantPro/) is used to smooth out irregular spikes or dips in the signal. The trimmed values are replaced with linearly interpolated values with the equation below: 
+
+![interpolation](examples/interpolation.png)
 
 - The script also implements a simple unweighted rectangular smoothing algorithms as shown below (the number of smooths can be specified):  
+
 ![Smoothing_equation](examples/equation.png) 
 
 - Time series can be aligned according to a specified boundary as shown below in Figure 3. When aligning, the time series are aligned at the boundary specified by the user (e.g. at the end of interval A in Figure 3). The portion before the alignment point is trimmed to be the same length as the shortest as the res line shows (e.g. trajectory 1 in Figure 3).
