@@ -1,4 +1,103 @@
 ################################### PROCEDURES ##############################
+procedure getEMA
+	beginPause: "EMA parameters"
+		word: "Measurements file name", "measures.txt"
+		word: "EMA file extension", ".txt"
+		choice: "EMA data delimiter", 1
+			option: "Comma"
+			option: "Tab"
+	clicked = endPause: "Continue", 1
+	
+	for file from 1 to fileNum
+		# read raw ema data
+		currentName$ = fileNames$[file]
+		thisFile$ = working_directory$ + currentName$ + eMA_file_extension$
+		if eMA_data_delimiter$ == "Comma"
+			Read Table from comma-separated file... 'thisFile$'
+		else
+			Read Table from tab-separated file... 'thisFile$'
+		endif
+		select Table 'currentName$'
+		Rename... 'currentName$'_ema
+
+		# calculate sampling rate and add time col in ema data
+		Append column... Time
+		rows = Get number of rows
+		select Sound 'currentName$'
+		duration = Get total duration
+		time_step = duration/rows
+		for row from 1 to rows
+			time = (row-1)*time_step
+			select Table 'currentName$'_ema
+			Set numeric value... row Time time
+		endfor
+	endfor
+	
+	# create string list for ema measurements
+	filePath$ = working_directory$ + measurements_file_name$
+	Read Strings from raw text file... 'filePath$'
+	measureNum = Get number of strings
+	Rename... measures
+
+	# add ema cols in the final data
+	for measurement from 1 to measureNum
+		select Strings measures
+		thisMeasure$ = Get string... measurement
+		select Table 'df$'
+		Append column... 'thisMeasure$'
+		measures$[measurement] = thisMeasure$
+	endfor
+	# calcualte ema data for each measurement at each time point in the formant data
+
+	select Table 'df$'
+	len = Get number of rows
+	for timePoint from 1 to len
+		# get the time and file info
+		select Table 'df$'
+		currentTime = Get value... timePoint RealTime
+		currentFile$ = Get value... timePoint File
+
+		# get t0
+		select Table 'currentFile$'_ema
+		Extract rows where column (number)... Time "less than or equal to" currentTime
+		Rename... pre
+		lastRow = Get number of rows
+		t_pre = Get value... lastRow Time
+		select Table pre
+		Remove
+
+		# get t2
+		select Table 'currentFile$'_ema
+		Extract rows where column (number)... Time "greater than or equal to" currentTime
+		Rename... post
+		t_post = Get value... 1 Time
+		select Table post
+		Remove
+
+		# calculate ema values and adding to final data
+		for m from 1 to measureNum
+			# get the measurement values at surrounding time points
+			select Table 'currentFile$'_ema
+			Extract rows where column (number)... Time "equal to" t_pre
+			currentMeasure$ = measures$[m]
+			pos_pre = Get value... 1 'currentMeasure$'
+			Remove
+
+			select Table 'currentFile$'_ema
+			Extract rows where column (number)... Time "equal to" t_post
+			pos_post = Get value... 1 'currentMeasure$'
+			Remove
+			
+			pos_current = pos_pre + (currentTime - t_pre)*(pos_post-pos_pre)/(t_post - t_pre)
+	
+			# inset position value in data
+			select Table 'df$'
+			Set numeric value... timePoint 'currentMeasure$' pos_current
+		endfor
+	endfor
+	
+endproc
+
 
 procedure getShortest
     shortest = 9000
@@ -195,7 +294,7 @@ procedure getTrimmedFormants fileName$ speaker$ noVoice$ maxFormant numFormant w
         label$ = Get label of interval... 1 int
         # check for irregular character
         if index_regex(label$, "[^a-zA-Z0-9]")
-            exitScript: "There is a special character in the", int, "th interval of the 1st tier, remove and try again."
+            exitScript: "There is a special character in the ", int, "th interval of the 1st tier, remove and try again."
         endif
         if length(label$)
             word$ = replace_regex$(label$, "\d", "", 0)

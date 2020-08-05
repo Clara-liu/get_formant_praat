@@ -94,12 +94,22 @@ if procedure$ == "Align repetitions"
 	call getShortest
 	call alignTrim
 	call getTime
-	if trim_all_trajectories_to_be_the_same_length
-		select Table trimmed
-	else
-		select Table aligned
-	endif
 endif
+
+if procedure$ == "Get raw trajectories"
+	df$ = "df"
+elsif procedure$ == "Align repetitions" and trim_all_trajectories_to_be_the_same_length
+	df$ = "trimmed"
+else
+	df$ = "aligned"
+endif
+
+if process_EMA_data
+	call getEMA
+endif
+
+select Table 'df$'
+Remove column... File
 
 Save as comma-separated file... 'resultPath$'.csv
 	
