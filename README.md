@@ -29,7 +29,7 @@ Figure 2 shows both smoothed and unsmoothed formant trajectories of the first in
 
 (equation 2)
 
-- Time series can be aligned according to a specified boundary as shown below in Figure 3. When aligning, the time series are aligned at the boundary specified by the user (e.g. at the end of interval A in Figure 3). The portion before the alignment point is trimmed to be the same length as the shortest as the res line shows (e.g. trajectory 1 in Figure 3).
+- Time series can be aligned according to a specified boundary as shown below in Figure 3. When aligning, the time series are aligned at the boundary specified by the user (e.g. at the end of interval A in Figure 3). The portion before the alignment point is trimmed to be the same length as the shortest as the red line shows (e.g. trajectory 1 in Figure 3).
 - If future analysis requires time normalisation, such as SSANOVA or functional analysis, the aligned time seires can be further trimmed to be the same length as the shortest one overall, as shown by the yellow line (e.g. trajectory 3 in Figure 3).
 
 ![Praat UI example](examples/align_trim.JPG)
@@ -53,7 +53,7 @@ Figure 2 shows both smoothed and unsmoothed formant trajectories of the first in
 ### getFormantData:
 - Fill in the initial settings accordingly. Speaker label should be specified such as S1 or name initials without quotation marks. Voiceless intervals can be specified in the *Nonvoiced interval label* field. If there are no voiceless intervals please ignore the field. The resultant data file name can be specified in *Data file name*. **The working directory must be filled in as an absolute path or a relative path to where the script is.** It is advised to use absolute path here.
 - Fill in the formant settings accordingly.
-- For the Procedure obtions, if *Align repetitions* is chosen, the time series will be aligned as mentioned above. If *Get raw trajectories* is chosen, the time seires will be segmented according to your labels and no alignment will be done.
+- For the Procedure options, if *Align repetitions* is chosen, the time series will be aligned as mentioned above. If *Get raw trajectories* is chosen, the time seires will be segmented according to your labels and no alignment will be done.
 - If *Align repetitions* is chosen, the alignment boundary will need to be specified in the *Align at the end of boundary labelled* field. A prompt will also appear later for the user to specify whether time series need to be trimmed further so all trajectories are the same length.
 - If EMA data needs to be segmented according to the labelled formant data, please check the box for *Process EMA data*. A pop up window will occur after formant data has been processed, fill the form accordingly and the EMA data will be in the final dataset.
 
