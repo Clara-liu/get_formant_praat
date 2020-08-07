@@ -70,3 +70,7 @@ Example outputs from getFormantData can be found in the examples folder. Note th
 For processing EMA data, examples can be found in the Carstens_ema folder. The template data is obtained from a Carstens AG501 system.
 
 
+## Independent trimming
+If the time series need only to be aligned at the first boundary, user can simply generate the raw trajectories for each speaker seperately and concatenate the df afterwards. Here a R script is provided if the time series need to be trimmed to the same length for analysis in SSANOVA or GAMMs. 
+
+The script contains two functions: one for finding the shortest token and one for trimming the dataframe. 
