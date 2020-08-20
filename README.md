@@ -74,3 +74,15 @@ For processing EMA data, examples can be found in the Carstens_ema folder. The t
 If the time series need only to be aligned at the first boundary, user can simply generate the raw trajectories for each speaker seperately and concatenate the df afterwards. Here a R script is provided if the time series need to be trimmed to the same length for analysis in SSANOVA or GAMMs. 
 
 The script contains two functions: one for finding the shortest token and one for trimming the dataframe. 
+
+## Normalisation
+If the user wishes to get interval wise normalised time series, simply generate the raw/unaligned data with the getFormantData script, and a normalisation function is provided here for R.
+
+Here is an example:
+
+```R
+df<- read.csv(file = file.choose(), sep = ',', header = T, colClasses=c('factor','factor', 'factor', rep("numeric",8), 'factor'))
+
+labels<- c('F1_s', 'F2_s')
+normDf<- normalise(df, 20, labels)
+```
