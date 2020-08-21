@@ -68,7 +68,7 @@ procedure getEMA
 
 		# get t2
 		select Table 'currentFile$'_ema
-		Extract rows where column (number)... Time "greater than or equal to" currentTime
+		Extract rows where column (number)... Time "greater than" currentTime
 		Rename... post
 		t_post = Get value... 1 Time
 		select Table post
