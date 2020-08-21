@@ -38,9 +38,9 @@ normalise <- function(df, points_per_int, var_vec) {
                 }
                 else{
                   time_pre<- tail(currentDf[currentDf$Time <= currentTime,]$Time,1)
-                  time_post<- head(currentDf[currentDf$Time >= currentTime,]$Time,1)
+                  time_post<- head(currentDf[currentDf$Time > currentTime,]$Time,1)
                   value_pre<- tail(currentDf[currentDf$Time <= currentTime,][var_vec[v]],1)
-                  value_post<- head(currentDf[currentDf$Time >= currentTime,][var_vec[v]],1)
+                  value_post<- head(currentDf[currentDf$Time > currentTime,][var_vec[v]],1)
                   
                   newValues[[v]]<- value_pre + ((currentTime-time_pre)*(value_post-value_pre))/(time_post-time_pre)
                 }
