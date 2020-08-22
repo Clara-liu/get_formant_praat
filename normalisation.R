@@ -3,21 +3,26 @@
  
 
 normalise <- function(df, points_per_int, var_vec) {
-  words<- levels(droplevels(df[, 'Rep']))
-  speakers<- levels(droplevels(df[,'Speaker']))
-  ints<- levels(droplevels(df[,'Interval']))
+  if (!require('data.table', character.only = T)){
+    install.packages('data.table')
+  }
+  library(data.table)
+  df<- setDT(df)
+  words<- unique(df$Rep)
+  speakers<- unique(df$Speaker)
+  ints<- unique(df$Interval)
   colNames<- c('Time', 'NormTime', 'Rep', 'Word', 'Interval','Speaker', var_vec)
   normDf<- setNames(data.frame(matrix(ncol = length(colNames), nrow = 0), stringsAsFactors=FALSE), colNames)
   r<- 1
   for (s in speakers){
     for (w in words){
       for (i in 1:length(ints)){
-        currentDf<- df[df$Speaker == s & df$Rep == w & df$Interval == ints[i],]
+        currentDf<- df[Speaker == s & Rep == w & Interval == ints[i]]
         if (nrow(currentDf)>0){
-          currentWord<- toString(currentDf[1,'Word'])
           rownames(currentDf)<- NULL
-          start <- currentDf[1,'Time']
-          end <- currentDf[nrow(currentDf),'Time']
+          currentWord<- as.character((currentDf[1,Word]))
+          start <- as.numeric(currentDf[1,Time])
+          end <- as.numeric(currentDf[nrow(currentDf),Time])
           totalDur<- end - start
           timeStep<- totalDur/(points_per_int-1)
           timePoints<-seq(from = start, to = end, by = timeStep)
@@ -31,22 +36,22 @@ normalise <- function(df, points_per_int, var_vec) {
               }
               else {
                 if (t == 1) {
-                  newValues[[v]]<-currentDf[1,var_vec[v]]
+                  newValues[[v]]<-as.numeric(currentDf[1,get(var_vec[v])])
                 }
                 else if (t == length(timePoints)){
-                  newValues[[v]]<-currentDf[nrow(currentDf),var_vec[v]]
+                  newValues[[v]]<-as.numeric(currentDf[nrow(currentDf),get(var_vec[v])])
                 }
                 else{
-                  time_pre<- tail(currentDf[currentDf$Time <= currentTime,]$Time,1)
-                  time_post<- head(currentDf[currentDf$Time > currentTime,]$Time,1)
-                  value_pre<- tail(currentDf[currentDf$Time <= currentTime,][var_vec[v]],1)
-                  value_post<- head(currentDf[currentDf$Time > currentTime,][var_vec[v]],1)
+                  time_pre<- as.numeric(tail(currentDf[Time <= currentTime]$Time,1))
+                  time_post<- as.numeric(head(currentDf[Time > currentTime]$Time,1))
+                  value_pre<- as.numeric(tail(currentDf[Time <= currentTime][,get(var_vec[v])],1))
+                  value_post<- as.numeric(head(currentDf[Time > currentTime][,get(var_vec[v])],1))
                   
                   newValues[[v]]<- value_pre + ((currentTime-time_pre)*(value_post-value_pre))/(time_post-time_pre)
                 }
               }
             }
-            newRow<- append(list(currentTime, currentNormTime, w, currentWord, ints[i], s), newValues)
+            newRow<- append(list(currentTime, currentNormTime, w, currentWord, as.character(ints[i]), s), newValues)
             normDf[r,]<- newRow
             r<- r + 1
           }
