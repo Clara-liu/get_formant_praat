@@ -54,7 +54,7 @@ Figure 2 shows both smoothed and unsmoothed formant trajectories of the first in
 - Fill in the initial settings accordingly. Speaker label should be specified such as S1 or name initials without quotation marks. Voiceless intervals can be specified in the *Nonvoiced interval label* field. If there are no voiceless intervals please ignore the field. The resultant data file name can be specified in *Data file name*. **The working directory must be filled in as an absolute path or a relative path to where the script is.** It is advised to use absolute path here.
 - Fill in the formant settings accordingly.
 - For the Procedure options, if *Align repetitions* is chosen, the time series will be aligned as mentioned above. If *Get raw trajectories* is chosen, the time seires will be segmented according to your labels and no alignment will be done.
-- If *Align repetitions* is chosen, the alignment boundary will need to be specified in the *Align at the end of boundary labelled* field. A prompt will also appear later for the user to specify whether time series need to be trimmed further so all trajectories are the same length.
+- If *Align repetitions* is chosen, the alignment boundary will need to be specified in the *Align at the end of boundary labelled* field. Time for the chosen boundary will be set to time 0. A prompt will also appear later for the user to specify whether time series need to be trimmed further so all trajectories are the same length.
 - If EMA data needs to be segmented according to the labelled formant data, please check the box for *Process EMA data*. A pop up window will occur after formant data has been processed, fill the form accordingly and the EMA data will be in the final dataset.
 
 -----

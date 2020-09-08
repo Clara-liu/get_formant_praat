@@ -263,7 +263,7 @@ procedure getTime
 		currentSpeaker$ = Get value... row Speaker
 		if currentWord$ <> thisWord$ or currentSpeaker$ <> thisSpeaker$
 			select Table 'name$'
-			Set numeric value... row Time 0
+			Set numeric value... row Time -(shortest)
 			thisWord$ = currentWord$
 			thisSpeaker$ = currentSpeaker$
 		else
