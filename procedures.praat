@@ -500,16 +500,16 @@ procedure smoothFormants smoothNum name$
                 Remove
             endif
         endfor
-    endfor
 
-    select Table 'name$'
-    total_rows = Get number of rows
-    for r from 1 to total_rows
-        interval$ = Get value... r Interval
-        if interval$ <> non_voiced$
-            Set numeric value... r F1_s f1_smoothed[r]
-            Set numeric value... r F2_s f2_smoothed[r]
-            Set numeric value... r F3_s f3_smoothed[r]
-        endif
+    	select Table 'name$'
+    	total_rows = Get number of rows
+    	for r from 1 to total_rows
+        	interval$ = Get value... r Interval
+        	if interval$ <> non_voiced$
+            	Set numeric value... r F1_s f1_smoothed[r]
+            	Set numeric value... r F2_s f2_smoothed[r]
+            	Set numeric value... r F3_s f3_smoothed[r]
+        	endif
+    	endfor
     endfor
 endproc

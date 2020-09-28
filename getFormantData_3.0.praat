@@ -12,7 +12,7 @@ form Parameter settings
 	comment Formant settings:
 		natural Sampling_rate 160
 		boolean Smooth_formant
-		integer Number_of_rectangular_smooths 2
+		integer Number_of_rectangular_smooths 1
 		natural Max_number_of_formants 5
 		natural Max_formant 5000
 		positive Window_length_(s) 0.025
